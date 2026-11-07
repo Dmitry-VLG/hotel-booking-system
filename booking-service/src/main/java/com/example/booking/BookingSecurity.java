@@ -18,22 +18,60 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableMethodSecurity
 public class BookingSecurity {
-    @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
-    @Bean JwtEncoder jwtEncoder(@Value("${app.private-key}") Resource privateKey,
-                                @Value("${app.public-key}") Resource publicKey) {
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder(
+            @Value("${app.private-key}") Resource privateKey,
+            @Value("${app.public-key}") Resource publicKey) {
         return JwtSupport.encoder(privateKey, publicKey);
     }
-    @Bean JwtDecoder jwtDecoder(@Value("${app.public-key}") Resource key) { return JwtSupport.decoder(key, false); }
-    @Bean SecurityFilterChain security(HttpSecurity http, JwtDecoder decoder, ObjectMapper mapper) throws Exception {
+
+    @Bean
+    JwtDecoder jwtDecoder(@Value("${app.public-key}") Resource key) {
+        return JwtSupport.decoder(key, false);
+    }
+
+    @Bean
+    SecurityFilterChain security(HttpSecurity http, JwtDecoder decoder, ObjectMapper mapper)
+            throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(a -> a.requestMatchers("/api/auth/register", "/api/auth/login",
-                        "/actuator/health", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**")
-                        .permitAll().anyRequest().hasRole("USER"))
-                .oauth2ResourceServer(o -> o.jwt(j -> j.decoder(decoder).jwtAuthenticationConverter(JwtSupport.userConverter()))
-                        .authenticationEntryPoint((q, r, e) -> JwtSupport.securityError(mapper, q, r, 401)))
-                .exceptionHandling(e -> e.authenticationEntryPoint((q, r, x) -> JwtSupport.securityError(mapper, q, r, 401))
-                        .accessDeniedHandler((q, r, x) -> JwtSupport.securityError(mapper, q, r, 403)))
+                .authorizeHttpRequests(
+                        a ->
+                                a.requestMatchers(
+                                                "/api/auth/register",
+                                                "/api/auth/login",
+                                                "/actuator/health",
+                                                "/swagger-ui/**",
+                                                "/swagger-ui.html",
+                                                "/v3/api-docs/**")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .hasRole("USER"))
+                .oauth2ResourceServer(
+                        o ->
+                                o.jwt(
+                                                j ->
+                                                        j.decoder(decoder)
+                                                                .jwtAuthenticationConverter(
+                                                                        JwtSupport.userConverter()))
+                                        .authenticationEntryPoint(
+                                                (q, r, e) ->
+                                                        JwtSupport.securityError(
+                                                                mapper, q, r, 401)))
+                .exceptionHandling(
+                        e ->
+                                e.authenticationEntryPoint(
+                                                (q, r, x) ->
+                                                        JwtSupport.securityError(mapper, q, r, 401))
+                                        .accessDeniedHandler(
+                                                (q, r, x) ->
+                                                        JwtSupport.securityError(
+                                                                mapper, q, r, 403)))
                 .build();
     }
 }

@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@SpringBootApplication(scanBasePackages={"com.example.booking", "com.example.common"})
+@SpringBootApplication(scanBasePackages = {"com.example.booking", "com.example.common"})
 public class BookingApplication {
-    public static void main(String[] args) { SpringApplication.run(BookingApplication.class, args); }
+    public static void main(String[] args) {
+        SpringApplication.run(BookingApplication.class, args);
+    }
 }

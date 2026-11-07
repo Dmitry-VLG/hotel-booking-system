@@ -10,10 +10,11 @@ import org.springframework.web.client.RestClient;
 
 @Configuration
 public class HttpClientConfig {
-    @Bean @LoadBalanced
+    @Bean
+    @LoadBalanced
     RestClient.Builder hotelRestClientBuilder() {
-        var http=HttpClient.newBuilder().connectTimeout(Duration.ofMillis(500)).build();
-        var factory=new JdkClientHttpRequestFactory(http);
+        var http = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(500)).build();
+        var factory = new JdkClientHttpRequestFactory(http);
         factory.setReadTimeout(Duration.ofSeconds(1));
         return RestClient.builder().requestFactory(factory);
     }

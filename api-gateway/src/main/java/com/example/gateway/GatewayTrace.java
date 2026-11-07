@@ -15,16 +15,26 @@ public class GatewayTrace implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String id;
-        try { id = UUID.fromString(exchange.getRequest().getHeaders().getFirst("X-Trace-Id")).toString(); }
-        catch (Exception ignored) { id = UUID.randomUUID().toString(); }
+        try {
+            id =
+                    UUID.fromString(exchange.getRequest().getHeaders().getFirst("X-Trace-Id"))
+                            .toString();
+        } catch (Exception ignored) {
+            id = UUID.randomUUID().toString();
+        }
         String trace = id;
         exchange.getAttributes().put("traceId", trace);
         exchange.getResponse().getHeaders().set("X-Trace-Id", trace);
-        var request = exchange.getRequest().mutate().headers(headers -> {
-            headers.set("X-Trace-Id", trace);
-            headers.remove("X-User-Id");
-            headers.remove("X-Role");
-        }).build();
+        var request =
+                exchange.getRequest()
+                        .mutate()
+                        .headers(
+                                headers -> {
+                                    headers.set("X-Trace-Id", trace);
+                                    headers.remove("X-User-Id");
+                                    headers.remove("X-Role");
+                                })
+                        .build();
         return chain.filter(exchange.mutate().request(request).build());
     }
 }

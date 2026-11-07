@@ -22,28 +22,39 @@ public class BookingController {
     private final BookingTransactions transactions;
 
     @PostMapping
-    public ResponseEntity<String> create(@AuthenticationPrincipal Jwt jwt,
-            @RequestHeader("Idempotency-Key") String key, @Valid @RequestBody NewBooking input) {
-        var result=coordinator.create(users.current(jwt), key, input);
-        return ResponseEntity.status(result.status()).contentType(MediaType.APPLICATION_JSON).body(result.body());
+    public ResponseEntity<String> create(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader("Idempotency-Key") String key,
+            @Valid @RequestBody NewBooking input) {
+        var result = coordinator.create(users.current(jwt), key, input);
+        return ResponseEntity.status(result.status())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result.body());
     }
+
     @GetMapping
-    public PageResult<BookingView> history(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam(required=false) String status, @RequestParam(defaultValue="0") int page,
-            @RequestParam(defaultValue="20") int size) {
+    public PageResult<BookingView> history(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         return transactions.history(users.current(jwt), status, page, size);
     }
+
     @GetMapping("/{id}")
     public BookingView get(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
         return transactions.owned(id, users.current(jwt));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<BookingView> cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
-        Long userId=users.current(jwt);
+    public ResponseEntity<BookingView> cancel(
+            @AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+        Long userId = users.current(jwt);
         transactions.cancelOwned(id, userId);
         coordinator.compensate(id);
-        var result=transactions.owned(id, userId);
+        var result = transactions.owned(id, userId);
         return "REQUIRED".equals(result.compensationStatus())
-                ? ResponseEntity.accepted().body(result) : ResponseEntity.noContent().build();
+                ? ResponseEntity.accepted().body(result)
+                : ResponseEntity.noContent().build();
     }
 }

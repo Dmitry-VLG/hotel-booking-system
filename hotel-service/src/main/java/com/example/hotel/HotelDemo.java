@@ -9,9 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name="app.demo.enabled", havingValue="true")
+@ConditionalOnProperty(name = "app.demo.enabled", havingValue = "true")
 public class HotelDemo implements CommandLineRunner {
     private final CatalogService catalog;
+
     @Override
     public void run(String... args) {
         var first = catalog.createHotel(new HotelInput("Учебный отель", "Центральная улица 1"));

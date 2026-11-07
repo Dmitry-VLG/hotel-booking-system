@@ -19,8 +19,15 @@ public class CommonConfig {
 
     @Bean
     OpenAPI openAPI() {
-        return new OpenAPI().components(new Components().addSecuritySchemes("bearerAuth",
-                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
+        return new OpenAPI()
+                .components(
+                        new Components()
+                                .addSecuritySchemes(
+                                        "bearerAuth",
+                                        new SecurityScheme()
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 }

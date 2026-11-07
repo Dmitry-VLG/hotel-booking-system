@@ -11,6 +11,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -23,6 +24,7 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <optional>true</optional>
       <version>${springdoc.version}</version>
     </dependency>
     <dependency>
@@ -30,4 +32,8 @@
       <artifactId>spring-tx</artifactId>
     </dependency>
   </dependencies>
+  <build><plugins><plugin>
+    <groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId>
+    <executions><execution><id>test-support</id><phase>process-test-classes</phase><goals><goal>test-jar</goal></goals></execution></executions>
+  </plugin></plugins></build>
 </project>

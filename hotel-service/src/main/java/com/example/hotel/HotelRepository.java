@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface HotelRepository extends JpaRepository<HotelEntity, Long> {
     Optional<HotelEntity> findByIdAndActiveTrue(Long id);
-    @Query("select h from HotelEntity h where h.active=true and (:name is null or lower(h.name) like lower(concat('%',:name,'%')))")
+
+    @Query(
+            "select h from HotelEntity h where h.active=true and (:name is null or lower(h.name) like lower(concat('%',:name,'%')))")
     Page<HotelEntity> search(@Param("name") String name, Pageable pageable);
 }

@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name="app.recovery.enabled", havingValue="true", matchIfMissing=true)
+@ConditionalOnProperty(name = "app.recovery.enabled", havingValue = "true", matchIfMissing = true)
 public class BookingRecovery {
     private final BookingRepository bookings;
     private final BookingTransactions transactions;
     private final BookingCoordinator coordinator;
     private final Clock clock;
 
-    @Scheduled(fixedDelay=2000)
+    @Scheduled(fixedDelay = 2000)
     public void recover() {
         for (var id : bookings.expired(clock.instant(), PageRequest.of(0, 100))) {
             traced(id, () -> transactions.timeout(id));
@@ -29,10 +29,15 @@ public class BookingRecovery {
             traced(id, () -> coordinator.compensate(id));
         }
     }
+
     private void traced(UUID id, Runnable work) {
         MDC.put("traceId", UUID.randomUUID().toString());
-        try { work.run(); }
-        catch (Exception ex) { log.warn("event=recovery_retry bookingId={}", id, ex); }
-        finally { MDC.remove("traceId"); }
+        try {
+            work.run();
+        } catch (Exception ex) {
+            log.warn("event=recovery_retry bookingId={}", id, ex);
+        } finally {
+            MDC.remove("traceId");
+        }
     }
 }

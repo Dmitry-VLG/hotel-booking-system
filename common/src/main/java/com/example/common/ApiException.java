@@ -12,15 +12,22 @@ public class ApiException extends RuntimeException {
         this.code = code;
     }
 
-    public HttpStatus status() { return status; }
-    public String code() { return code; }
+    public HttpStatus status() {
+        return status;
+    }
+
+    public String code() {
+        return code;
+    }
 
     public static ApiException bad(String message) {
         return new ApiException(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", message);
     }
+
     public static ApiException missing(String message) {
         return new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND", message);
     }
+
     public static ApiException conflict(String message) {
         return new ApiException(HttpStatus.CONFLICT, "CONFLICT", message);
     }

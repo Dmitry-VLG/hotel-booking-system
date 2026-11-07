@@ -12,7 +12,11 @@ import reactor.core.publisher.Mono;
 @Order(-2)
 public class GatewayErrors implements ErrorWebExceptionHandler {
     private final ObjectMapper mapper;
-    public GatewayErrors(ObjectMapper mapper) { this.mapper = mapper; }
+
+    public GatewayErrors(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         if (exchange.getResponse().isCommitted()) return Mono.error(ex);
