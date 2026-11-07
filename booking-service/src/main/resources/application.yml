@@ -1,0 +1,42 @@
+server:
+  address: 127.0.0.1
+  port: 8081
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: jdbc:h2:mem:booking;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=2000
+    username: sa
+    password: ""
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+app:
+  public-key: ${PUBLIC_KEY}
+  private-key: ${PRIVATE_KEY}
+  business-zone: UTC
+  booking-deadline-seconds: 15
+  demo:
+    enabled: ${DEMO_ENABLED:false}
+    admin-password: ${DEMO_ADMIN_PASSWORD:}
+    user-password: ${DEMO_USER_PASSWORD:}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+logging:
+  structured:
+    format:
+      console: logstash
