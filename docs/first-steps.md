@@ -1,4 +1,4 @@
-# Открытие проекта в IntelliJ IDEA
+# Открытие проекта в IDEA
 
 1. Откройте корневой `pom.xml` как Maven-проект.
 2. В Project Structure выберите JDK 21 и наследование Project SDK для модулей.
